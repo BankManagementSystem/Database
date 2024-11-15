@@ -68,6 +68,36 @@ INSERT INTO `dummy` VALUES (1,'abcd',20,'2004-05-06','9901062621');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `limits`
+--
+
+DROP TABLE IF EXISTS `limits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `limits` (
+  `Id` int NOT NULL,
+  `CardId` int DEFAULT NULL,
+  `domistic` float DEFAULT NULL,
+  `international` tinyint(1) DEFAULT '0',
+  `contact` tinyint(1) DEFAULT '0',
+  `onlinee` tinyint(1) DEFAULT '0',
+  `ATM` tinyint(1) DEFAULT '0',
+  `QR` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `limits`
+--
+
+LOCK TABLES `limits` WRITE;
+/*!40000 ALTER TABLE `limits` DISABLE KEYS */;
+INSERT INTO `limits` VALUES (11,1,600,0,1,1,0,0);
+/*!40000 ALTER TABLE `limits` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -87,7 +117,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Nidhish Shettigar'),(2,'Sanidhya K Bhandary'),(3,'Khyathi Shetty'),(4,'Esha Kunder'),(5,'Vaishnavi N');
+INSERT INTO `users` VALUES (1,'Nidhish Shettigar'),(2,'Sanidhya K Bhandary'),(3,'Khyathi Shetty'),(4,'Esha Kunder'),(5,'Vaishnavi N'),(6,'Dummy'),(7,'Hello');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -100,4 +130,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-10 12:52:16
+-- Dump completed on 2024-11-15 12:53:49
