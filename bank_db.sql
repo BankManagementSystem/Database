@@ -27,11 +27,12 @@ CREATE TABLE `accounts` (
   `AccountTypeId` int DEFAULT NULL,
   `CustomerId` int DEFAULT NULL,
   `BranchId` int DEFAULT NULL,
-  `Balance` decimal(12,2) DEFAULT NULL,
+  `Balance` decimal(12,2) DEFAULT '0.00',
   `TPIN` char(24) NOT NULL DEFAULT 'j3kSBFIkeina5eMI6KUefw==',
   `Date` date NOT NULL,
   `CreatedDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `IsActive` tinyint(1) DEFAULT '1',
+  `Status` enum('Active','InActive') DEFAULT 'Active',
   PRIMARY KEY (`Id`),
   KEY `CustomerId` (`CustomerId`),
   KEY `BranchId` (`BranchId`),
@@ -39,7 +40,7 @@ CREATE TABLE `accounts` (
   CONSTRAINT `accounts_ibfk_1` FOREIGN KEY (`CustomerId`) REFERENCES `customers` (`Id`),
   CONSTRAINT `accounts_ibfk_2` FOREIGN KEY (`BranchId`) REFERENCES `branches` (`Id`),
   CONSTRAINT `accounts_ibfk_3` FOREIGN KEY (`AccountTypeId`) REFERENCES `accountstype` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=900000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=900001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,6 +49,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+INSERT INTO `accounts` VALUES (900000,1,1,1,20000.00,'j3kSBFIkeina5eMI6KUefw==','2024-11-30','2024-11-30 13:39:04',1,'Active');
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,12 +62,12 @@ DROP TABLE IF EXISTS `accountstype`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `accountstype` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Type` varchar(20) DEFAULT NULL,
-  `MinBalance` decimal(12,2) DEFAULT NULL,
+  `Type` enum('Savings','Checking') NOT NULL,
+  `MinBalance` decimal(7,2) DEFAULT NULL,
   `CreatedDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `IsActive` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,6 +76,7 @@ CREATE TABLE `accountstype` (
 
 LOCK TABLES `accountstype` WRITE;
 /*!40000 ALTER TABLE `accountstype` DISABLE KEYS */;
+INSERT INTO `accountstype` VALUES (1,'Savings',0.00,'2024-11-30 13:11:46',1);
 /*!40000 ALTER TABLE `accountstype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,8 +97,9 @@ CREATE TABLE `addresses` (
   `ZipCode` varchar(10) NOT NULL,
   `CreatedDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `IsActive` tinyint(1) DEFAULT '1',
+  `Country` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,6 +108,7 @@ CREATE TABLE `addresses` (
 
 LOCK TABLES `addresses` WRITE;
 /*!40000 ALTER TABLE `addresses` DISABLE KEYS */;
+INSERT INTO `addresses` VALUES (1,'303, Inland Encore, Kadri Kambala Road',NULL,'Mangalore','DK','Karnataka','575004','2024-11-30 12:14:41',1,'India'),(2,'TEJASVINI HOSPITAL ANNEXE, Kadri Temple Rd, Mallikatte',NULL,'Mangalore','DK','Karnataka','575003','2024-11-30 13:21:00',1,'India');
 /*!40000 ALTER TABLE `addresses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +134,7 @@ CREATE TABLE `branches` (
   UNIQUE KEY `IFSC` (`IFSC`),
   KEY `AddressId` (`AddressId`),
   CONSTRAINT `branches_ibfk_1` FOREIGN KEY (`AddressId`) REFERENCES `addresses` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,6 +143,7 @@ CREATE TABLE `branches` (
 
 LOCK TABLES `branches` WRITE;
 /*!40000 ALTER TABLE `branches` DISABLE KEYS */;
+INSERT INTO `branches` VALUES (1,'Kadri, Mangalore','AB000000001',2,NULL,20,'0824 2421055','ebank@nittebank.com','2024-11-30 13:22:16',1);
 /*!40000 ALTER TABLE `branches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -221,6 +227,7 @@ CREATE TABLE `cards` (
   `AccountId` int DEFAULT NULL,
   `CreatedDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `IsActive` tinyint(1) DEFAULT '1',
+  `Status` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`Id`),
   KEY `CustomerId` (`CustomerId`),
   KEY `AccountId` (`AccountId`),
@@ -309,7 +316,7 @@ DROP TABLE IF EXISTS `customerlogins`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customerlogins` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `CustomerId` int DEFAULT NULL,
+  `CustomerId` int NOT NULL,
   `Email` varchar(50) NOT NULL,
   `Password` char(24) DEFAULT 'ilWR0Hyiprqe2+NlIcZ70A==',
   `LastLogin` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -318,8 +325,10 @@ CREATE TABLE `customerlogins` (
   `IsActive` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`Id`),
   KEY `CustomerId` (`CustomerId`),
-  CONSTRAINT `customerlogins_ibfk_1` FOREIGN KEY (`CustomerId`) REFERENCES `customers` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=500000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `Email` (`Email`),
+  CONSTRAINT `customerlogins_ibfk_1` FOREIGN KEY (`CustomerId`) REFERENCES `customers` (`Id`),
+  CONSTRAINT `customerlogins_ibfk_2` FOREIGN KEY (`Email`) REFERENCES `customers` (`Email`)
+) ENGINE=InnoDB AUTO_INCREMENT=500001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,6 +337,7 @@ CREATE TABLE `customerlogins` (
 
 LOCK TABLES `customerlogins` WRITE;
 /*!40000 ALTER TABLE `customerlogins` DISABLE KEYS */;
+INSERT INTO `customerlogins` VALUES (500000,1,'nidhish.shettigar.06@gmail.com','ilWR0Hyiprqe2+NlIcZ70A==','2024-11-30 13:37:56','2024-11-30 13:37:56','2024-11-30 13:37:56',1);
 /*!40000 ALTER TABLE `customerlogins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,9 +365,10 @@ CREATE TABLE `customers` (
   PRIMARY KEY (`Id`),
   UNIQUE KEY `AadhaarNo` (`AadhaarNo`),
   UNIQUE KEY `PanCardNo` (`PanCardNo`),
+  UNIQUE KEY `Email` (`Email`),
   KEY `AddressId` (`AddressId`),
   CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`AddressId`) REFERENCES `addresses` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -366,6 +377,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+INSERT INTO `customers` VALUES (1,'Nidhish','','Shettigar','Male','2004-05-06','9901062621','nidhish.shettigar.06@gmail.com','1234 5678 9102','HPPSN1234A',1,'2024-11-30 12:20:33',1);
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -659,4 +671,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-30 14:46:49
+-- Dump completed on 2024-12-01 16:41:28
